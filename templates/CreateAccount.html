@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Account</title>
+</head>
+<body>
+<form method="POST" novalidate onsubmit=" return validateForm()" enctype="multipart/form-data">
+
+    <label for="cat_name">Enter cat's name</label>
+    <input type="text" id="cat_name" name="cat_name">
+
+    <br>
+
+    <label for="uname">Enter username</label>
+    <input type="text" id="uname" name="uname">
+
+    <br>
+
+    <label for="psswd">Enter password</label>
+    <input type="password" id="psswd" name="psswd">
+
+    <br>
+
+    <label for="psswdC">Confirm password</label>
+    <input type="password" id="psswdC" name="psswdC">
+
+    <br>
+
+    <label for="profilePic"> Upload profile picture</label>
+    <input type="file" id="profilePic" name="profilePic">
+
+    <br>
+    <input type="submit" value="create account">
+</form>
+
+<img src="{{url_for('static',filename='Hoodoos.jpg')}}">
+</body>
+
+<script>
+    //Make sure that passwords match before allowing form to be submitted
+    //TODO: Require additional layer of validation on server side
+    function validateForm()
+    {
+        //alert("passwords do not match");
+        return true
+    }
+</script>
+</html>
