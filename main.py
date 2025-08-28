@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, make_response, redirect
+from flask import Flask, render_template, request, make_response, redirect,flash, url_for
 import mariadb
 from werkzeug.utils import secure_filename
 
@@ -23,6 +23,7 @@ except mariadb.Error as e:
     print(f"Error connecting to MariaDB: {e}")
 
 app = Flask(__name__)
+app.secret_key = 'temp secret key' #TODO: randomly generate this
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -54,6 +55,13 @@ def loginPage():
     if request.method == 'POST':
         uname = request.form.get('uname')
         psswd = request.form.get('psswd')
+
+        try:
+            conn = mariadb.connect(**db_config)
+            print("Connected to MariaDB successfully!")
+        except mariadb.Error as e:
+            print(f"Error connecting to MariaDB: {e}")
+
         cursor = conn.cursor()
         #TODO: Modify this to sanatize input and then check if it's
         #in the DB.
@@ -93,13 +101,47 @@ def createAccount():
 
         fn = secure_filename(profilePic.filename)
         profilePic.save(os.path.join(app.config['UPLOAD_FOLDER'], fn))
+
         #save this filepath to the DB with the user
+        #TODO: set image size constraints for uploading
+        #TODO: verifiy username is not in use when user submits
 
         #process from text
         uname = request.form.get('uname')
         psswd = request.form.get('psswd')
         cat_name = request.form.get('cat_name')
-        return f"<p> catname: {cat_name}\n username: {uname} password: {psswd}</p>"
+
+        try:
+            conn = mariadb.connect(**db_config)
+            print("Connected to MariaDB successfully!")
+        except mariadb.Error as e:
+            print(f"Error connecting to MariaDB: {e}")
+
+        #send the account info to the DB
+        cursor = conn.cursor()
+
+        #check if username is already in use
+        cursor.execute(f"SELECT * FROM users WHERE username = '{uname}'")
+        row = cursor.fetchone()
+        if row != None:
+            cursor.close()
+            conn.close()
+            flash("username already in use")
+            return redirect(url_for('createAccount'))
+
+
+
+        cursor.execute(f"INSERT INTO users (username,cat_name,password_hash,profile_picture_path) VALUES('{uname}','{cat_name}','{psswd}','testPath')")
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        #assign cookie to user and redirect them to their main feed upon successful login
+        resp = make_response('<meta http-equiv="refresh" content="0; url=http://127.0.0.1:5000/">" />') #TODO: swap these for redirects
+        resp.set_cookie('username', 'testName', secure=True,max_age=3600)  # TODO: enable httponly and esnure that js can stil send the cookie
+        return resp
+
+        #return f"<p> catname: {cat_name}\n username: {uname} password: {psswd}</p>"
 
     return render_template('CreateAccount.html')
 

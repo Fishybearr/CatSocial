@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Account</title>
+    <title>Create an account | CatSocial</title>
 </head>
 <body>
 <form method="POST" novalidate onsubmit=" return validateForm()" enctype="multipart/form-data">
@@ -33,6 +33,18 @@
     <br>
     <input type="submit" value="create account">
 </form>
+
+
+ {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <script>
+                    var flashMessages = {{ messages | tojson | safe }};
+                    for (var i = 0; i < flashMessages.length; i++) {
+                        alert(flashMessages[i]); // remove the message prepend
+                    }
+                </script>
+            {% endif %}
+        {% endwith %}
 
 <img src="{{url_for('static',filename='Hoodoos.jpg')}}">
 </body>
