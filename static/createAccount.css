@@ -1,0 +1,93 @@
+form
+{
+    border-radius: 20px;
+    border-color: #ffffff;
+    border-style: solid;
+    margin: auto;
+    width: 50%;
+    background-color: #ffffff;
+    color: #000000;
+    display: block;
+    cursor: default;
+
+    justify-content: center;
+
+
+}
+
+input
+{
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 2px;
+    display: block;
+    margin: auto;
+    font-size: 15pt;
+    background-color: #dfdcdc;
+}
+
+label
+{
+    display: block;
+    text-align: center;
+}
+
+input[type="file"]
+{
+    font-size: 11pt;
+    border-color: #8d8c95;
+    padding: 2px;
+}
+
+
+h2
+{
+    font-size: 25pt;
+   text-align: center;
+}
+
+input[type="submit"]
+{
+    display: block;
+    background-color: #317dff;
+    color: whitesmoke;
+    text-align: center;
+    margin: auto;
+
+    width: 50%;
+
+    font-size: 25pt;
+   margin-bottom: 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+input[type="submit"]:hover
+{
+
+    background-color: #599cff;
+    color: whitesmoke;
+}
+
+input[type="submit"]:active
+{
+    background-color: #0057f1;
+    color: whitesmoke;
+}
+
+
+body
+{
+    background-color: #afaeb8;
+
+    background-image: linear-gradient(45deg, #b36bdd,#ff6733);
+    background-attachment: fixed;
+    min-height: 100vh;
+
+    font-family: Arial, sans-serif;
+}
+
+.accountInfo
+{
+    text-align: center;
+}

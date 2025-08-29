@@ -3,35 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Create an account | CatSocial</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='createAccount.css') }}">
 </head>
 <body>
 <form method="POST" novalidate onsubmit=" return validateForm()" enctype="multipart/form-data">
 
-    <label for="cat_name">Enter cat's name</label>
-    <input type="text" id="cat_name" name="cat_name">
+    <h2>Create Account</h2>
+    <p class="accountInfo">Already have an account? <a href="/login">Sign in</a></p>
+
+
+    <input type="text" id="cat_name" name="cat_name" placeholder="Cat's Name">
 
     <br>
 
-    <label for="uname">Enter username</label>
-    <input type="text" id="uname" name="uname">
+
+    <input type="text" id="uname" name="uname" placeholder="Username">
 
     <br>
 
-    <label for="psswd">Enter password</label>
-    <input type="password" id="psswd" name="psswd">
+
+    <input type="password" id="psswd" name="psswd" placeholder="Password">
 
     <br>
 
-    <label for="psswdC">Confirm password</label>
-    <input type="password" id="psswdC" name="psswdC">
+
+    <input type="password" id="psswdC" name="psswdC" placeholder="Confirm Password">
 
     <br>
 
-    <label for="profilePic"> Upload profile picture</label>
+    <label for="profilePic"> Upload profile picture (of your cat)</label>
     <input type="file" id="profilePic" name="profilePic">
 
     <br>
-    <input type="submit" value="create account">
+    <input type="submit" value="Sign Up">
 </form>
 
 
@@ -46,7 +50,7 @@
             {% endif %}
         {% endwith %}
 
-<img src="{{url_for('static',filename='Hoodoos.jpg')}}">
+
 </body>
 
 <script>

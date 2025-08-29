@@ -31,10 +31,14 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #TODO: Handle HTML escaping
 @app.route('/')
 def hello():
+    #TODO: design new auth system so that this
+    #checks if a user exists and then logs into their account
+    #TODO: possibly just return this page always and update info
+    #from client side after reading cookie
     cook = request.cookies.get('username')
-    if cook == "testName":
-        return render_template('LoggedInFeed.html')
-    return render_template('index.html')
+    #if cook == "testName":
+    return render_template('LoggedInFeed.html')
+    #return render_template('index.html')
 
 
 #TODO REMOVE THIS
@@ -47,6 +51,10 @@ def displayUserHome(userID):
 @app.route('/login', methods=['GET', 'POST'])
 def loginPage():
     cook = request.cookies.get('username')
+
+#TODO: Need to set up a better auth system here to log user into the correct page
+
+
     if cook == "testName":
         return '<meta http-equiv="refresh" content="0; url=http://127.0.0.1:5000/">" />'
 
@@ -74,14 +82,20 @@ def loginPage():
         #TODO: Implement hashing function here
         if row != None and row[2] == psswd:
             resp = make_response('<meta http-equiv="refresh" content="0; url=http://127.0.0.1:5000/">" />')
-            resp.set_cookie('username', 'testName', secure=True, max_age=3600) #TODO: enable httponly and esnure that js can stil send the cookie
+            resp.set_cookie('username', f'{uname}', secure=True, max_age=3600) #TODO: enable httponly and esnure that js can stil send the cookie
+
+            #add this cookie to the db under this user
+            cursor.execute(f"UPDATE users SET auth_cookie = '{uname}' WHERE username = '{uname}'")
+            conn.commit()
+            conn.close()
             return resp
 
             #Eventually will send a cookie here and store it
             #in the DB, then give access to custom feed page
         else:
             return f"invalid login"
-        cursor.close()
+
+        #TODO: close the cursor after each path is reached
 
     return render_template('login.html')
 
@@ -136,14 +150,26 @@ def createAccount():
         cursor.close()
         conn.close()
 
-        #assign cookie to user and redirect them to their main feed upon successful login
-        resp = make_response('<meta http-equiv="refresh" content="0; url=http://127.0.0.1:5000/">" />') #TODO: swap these for redirects
-        resp.set_cookie('username', 'testName', secure=True,max_age=3600)  # TODO: enable httponly and esnure that js can stil send the cookie
+        #In this case we just want to redirect to the login page without any cookies
+        resp = make_response('<meta http-equiv="refresh" content="0; url=http://127.0.0.1:5000/login">" />') #TODO: swap these for redirects
+        #resp.set_cookie('username', 'testName', secure=True,max_age=3600)  # TODO: enable httponly and esnure that js can stil send the cookie
         return resp
 
         #return f"<p> catname: {cat_name}\n username: {uname} password: {psswd}</p>"
 
     return render_template('CreateAccount.html')
+
+
+@app.route('/getUserInfo', methods=['GET'])
+def get_user_info():
+
+    if request.method == 'GET':
+        cookie = request.cookies.get('username')
+        if cookie != None:
+            return (f"your cookie is {cookie}")
+        else:
+            return "Not logged in: should redirect"
+    return "no"
 
 
 """

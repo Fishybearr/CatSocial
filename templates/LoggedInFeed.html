@@ -6,5 +6,43 @@
 </head>
 <body>
 <p> This is your feed</p>
+<div id="username"></div>
 </body>
+
+<script>
+    //Get info of user from their cookie
+    //This will allow client to pull username and profile pic
+
+     uname = document.getElementById('username');
+
+    async function fetch_user_data(url)
+    {
+        try {
+            const response = await fetch(url);
+            if(!response.ok){
+                throw new Error('HTTP error');
+            }
+
+            const uname = await response.text();
+            //console.log(uname);
+            return uname;
+        }
+        catch(error)
+        {
+            console.error("Error ",error)
+            return null;
+        }
+
+    }
+
+     fetch_user_data("http://127.0.0.1:5000/getUserInfo")
+    .then(text => {
+        if (text)
+        {
+
+            //console.log(text);
+            uname.textContent = text;
+        }
+    })
+</script>
 </html>
