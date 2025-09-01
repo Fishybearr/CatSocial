@@ -104,21 +104,7 @@ def loginPage():
 @app.route('/createAccount', methods=['GET', 'POST'])
 def createAccount():
     if request.method == 'POST':
-        #process form image
-        if 'profilePic' not in request.files:
-            return redirect(request.url)
 
-        profilePic = request.files['profilePic']
-
-        if profilePic.filename == '':
-            return redirect(request.url)
-
-        fn = secure_filename(profilePic.filename)
-        profilePic.save(os.path.join(app.config['UPLOAD_FOLDER'], fn))
-
-        #save this filepath to the DB with the user
-        #TODO: set image size constraints for uploading
-        #TODO: verifiy username is not in use when user submits
 
         #process from text
         uname = request.form.get('uname')
@@ -142,6 +128,25 @@ def createAccount():
             conn.close()
             flash("username already in use")
             return redirect(url_for('createAccount'))
+
+        # process form image
+        if 'profilePic' not in request.files:
+            return redirect(request.url)
+
+
+
+        profilePic = request.files['profilePic']
+
+        if profilePic.filename == '':
+            return redirect(request.url)
+
+        fn = secure_filename(profilePic.filename)
+        profilePic.save(os.path.join(app.config['UPLOAD_FOLDER'], fn))
+
+        # save this filepath to the DB with the user
+        # TODO: set image size constraints for uploading
+        # TODO: verifiy username is not in use when user submits
+
 
 
 
@@ -170,6 +175,13 @@ def get_user_info():
         else:
             return "Not logged in: should redirect"
     return "no"
+
+
+@app.route('/logout',methods=['GET'])
+def logout():
+    resp = make_response(redirect(url_for('loginPage')))
+    resp.delete_cookie('username') #TODO: change cookie name to a var
+    return resp
 
 
 """
